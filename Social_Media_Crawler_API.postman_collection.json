@@ -1,0 +1,307 @@
+{
+	"info": {
+		"_postman_id": "social-crawler-api-collection",
+		"name": "Social Media Crawler API",
+		"description": "Complete API collection for testing Social Media Crawler system (Instagram, TikTok, Facebook)\n\n## Services:\n- Crawl Trigger API (Port 8080): Submit and manage crawl jobs\n- Processing API (Port 8081): Process and retrieve crawled data\n\n## Setup:\n1. Ensure all services are running (Redis, MySQL, APIs, Worker)\n2. Update environment variables if needed\n3. Start testing with health checks",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Crawl Trigger API (Port 8080)",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/health",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["health"]
+						},
+						"description": "Check if Crawl Trigger API is running"
+					},
+					"response": []
+				},
+				{
+					"name": "Submit Instagram Crawl Job",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"platform\": \"instagram\",\n  \"target_url\": \"https://instagram.com/p/ABC123example\",\n  \"max_comments\": 100\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/crawl",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "crawl"]
+						},
+						"description": "Submit a new crawl job for Instagram post comments"
+					},
+					"response": []
+				},
+				{
+					"name": "Submit TikTok Crawl Job",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"platform\": \"tiktok\",\n  \"target_url\": \"https://tiktok.com/@username/video/1234567890\",\n  \"max_comments\": 50\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/crawl",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "crawl"]
+						},
+						"description": "Submit a new crawl job for TikTok video comments"
+					},
+					"response": []
+				},
+				{
+					"name": "Submit Facebook Crawl Job",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"platform\": \"facebook\",\n  \"target_url\": \"https://facebook.com/user/posts/123456789\",\n  \"max_comments\": 75\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/crawl",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "crawl"]
+						},
+						"description": "Submit a new crawl job for Facebook post comments"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Job Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/status/:job_id",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "status", ":job_id"],
+							"variable": [
+								{
+									"key": "job_id",
+									"value": "replace-with-actual-job-id",
+									"description": "Job ID returned from crawl submission"
+								}
+							]
+						},
+						"description": "Check the status of a crawl job (pending, processing, completed, failed)"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints for submitting and managing crawl jobs"
+		},
+		{
+			"name": "Processing API (Port 8081)",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/health",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8081",
+							"path": ["health"]
+						},
+						"description": "Check if Processing API is running and connected to MySQL"
+					},
+					"response": []
+				},
+				{
+					"name": "Process Crawled Data",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"job_id\": \"replace-with-actual-job-id\",\n  \"comments\": [\n    {\n      \"comment_id\": \"comment123\",\n      \"username\": \"user1\",\n      \"user_id\": \"user123\",\n      \"text\": \"Great post!\",\n      \"timestamp\": \"2026-02-06T10:00:00Z\",\n      \"likes\": 10,\n      \"replies_count\": 2,\n      \"platform\": \"instagram\",\n      \"parent_comment_id\": null,\n      \"raw_data\": {}\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/process",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8081",
+							"path": ["api", "process"]
+						},
+						"description": "Process and save crawled comments to database (normally called by Worker)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Comments by Job ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/comments/:job_id",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8081",
+							"path": ["api", "comments", ":job_id"],
+							"variable": [
+								{
+									"key": "job_id",
+									"value": "replace-with-actual-job-id",
+									"description": "Job ID to retrieve comments for"
+								}
+							]
+						},
+						"description": "Retrieve all crawled comments for a specific job"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints for processing and retrieving crawled data"
+		},
+		{
+			"name": "End-to-End Test Flow",
+			"item": [
+				{
+					"name": "1. Check All Services Health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/health",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["health"]
+						},
+						"description": "Step 1: Verify Crawl Trigger API is running"
+					},
+					"response": []
+				},
+				{
+					"name": "2. Submit Test Crawl Job",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Save job_id to environment variable",
+									"var jsonData = pm.response.json();",
+									"if (jsonData.job_id) {",
+									"    pm.environment.set(\"job_id\", jsonData.job_id);",
+									"    console.log(\"Job ID saved: \" + jsonData.job_id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"platform\": \"instagram\",\n  \"target_url\": \"https://instagram.com/p/test123\",\n  \"max_comments\": 50\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/crawl",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "crawl"]
+						},
+						"description": "Step 2: Submit a crawl job and save the job_id"
+					},
+					"response": []
+				},
+				{
+					"name": "3. Check Job Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/status/{{job_id}}",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "status", "{{job_id}}"]
+						},
+						"description": "Step 3: Check the status of the submitted job (use saved job_id)"
+					},
+					"response": []
+				},
+				{
+					"name": "4. Get Crawled Comments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/comments/{{job_id}}",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8081",
+							"path": ["api", "comments", "{{job_id}}"]
+						},
+						"description": "Step 4: Retrieve all comments that were crawled (use saved job_id)"
+					},
+					"response": []
+				}
+			],
+			"description": "Complete workflow for testing the entire crawler system"
+		}
+	],
+	"variable": [
+		{
+			"key": "crawl_api_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "processing_api_url",
+			"value": "http://localhost:8081",
+			"type": "string"
+		}
+	]
+}
